@@ -1,34 +1,48 @@
 {
-  "author": {
-    "name": "BitShares UI Worker",
-    "email": "ui-dev@bitshares.org"
-  },
+  "name": "bitsharesjs-ws",
+  "version": "3.1.1",
+  "description": "Pure JavaScript BitShares websocket interface for node.js and browsers.",
   "browser": {
     "ws": false
   },
+  "scripts": {
+    "test": "BABEL_ENV=test mocha --require @babel/register --recursive",
+    "test:watch": "npm test -- --watch",
+    "test:connection": "BABEL_ENV=test mocha --require @babel/register ./test/Connection --watch",
+    "test:api": "BABEL_ENV=test mocha --require @babel/register ./test/Api --watch",
+    "test:manager": "BABEL_ENV=test mocha --require @babel/register ./test/Manager --watch",
+    "pretest:browser": "NODE_ENV=dev browserify test/*.js -o browser-test/browser-test.js -t [ babelify ]",
+    "test:browser": "BABEL_ENV=test http-server ./browser-test",
+    "clean": "rm -rf ./lib/* & rm -rf ./build/*",
+    "prebuild": "npm run clean",
+    "build": "babel src -d lib",
+    "postbuild": "npm run browserify",
+    "prepublish": "npm run build",
+    "browserify": "cross-env NODE_ENV=production browserify lib/index.js --standalone bitshares_ws -o build/bitsharesjs-ws.js -d",
+    "postbrowserify": "cross-env NODE_ENV=production minify build/bitsharesjs-ws.js --mangle --outFile build/bitsharesjs-ws.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iobanker/bitsharesjs-ws.git"
+  },
+  "author": "BitShares UI Worker <ui-dev@bitshares.org>",
+  "contributors": [
+    "Sigve Kvalsvik <bitsharesblocks@gmail.com> (https://github.com/svk31)",
+    "James Calfee <james@jcalfee.info> (https://github.com/jcalfee/)",
+    "scientistnik"
+  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/iobanker/bitsharesjs-ws/issues"
   },
-  "contributors": [
-    {
-      "name": "Sigve Kvalsvik",
-      "email": "bitsharesblocks@gmail.com",
-      "url": "https://github.com/svk31"
-    },
-    {
-      "name": "James Calfee",
-      "email": "james@jcalfee.info",
-      "url": "https://github.com/jcalfee/"
-    },
-    {
-      "name": "scientistnik"
-    }
-  ],
+  "engines": {
+    "node": ">= 10.0.0"
+  },
+  "main": "lib/index.js",
   "dependencies": {
     "isomorphic-ws": "^4.0.1",
     "ws": "^4.1.0"
   },
-  "description": "Pure JavaScript BitShares websocket interface for node.js and browsers.",
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.4",
@@ -42,33 +56,5 @@
     "cross-env": "^5.0.1",
     "http-server": "^0.11.1",
     "mocha": "^5.2.0"
-  },
-  "engines": {
-    "node": ">= 10.0.0"
-  },
-  "homepage": "https://github.com/iobanker/bitsharesjs-ws#readme",
-  "license": "MIT",
-  "main": "lib/index.js",
-  "name": "bitsharesjs-ws",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/iobanker/bitsharesjs-ws.git"
-  },
-  "scripts": {
-    "browserify": "cross-env NODE_ENV=production browserify lib/index.js --standalone bitshares_ws -o build/bitsharesjs-ws.js -d",
-    "build": "babel src -d lib",
-    "clean": "rm -rf ./lib/* & rm -rf ./build/*",
-    "postbrowserify": "cross-env NODE_ENV=production minify build/bitsharesjs-ws.js --mangle --outFile build/bitsharesjs-ws.min.js",
-    "postbuild": "npm run browserify",
-    "prebuild": "npm run clean",
-    "prepublish": "npm run build",
-    "pretest:browser": "NODE_ENV=dev browserify test/*.js -o browser-test/browser-test.js -t [ babelify ]",
-    "test": "BABEL_ENV=test mocha --require @babel/register --recursive",
-    "test:api": "BABEL_ENV=test mocha --require @babel/register ./test/Api --watch",
-    "test:browser": "BABEL_ENV=test http-server ./browser-test",
-    "test:connection": "BABEL_ENV=test mocha --require @babel/register ./test/Connection --watch",
-    "test:manager": "BABEL_ENV=test mocha --require @babel/register ./test/Manager --watch",
-    "test:watch": "npm test -- --watch"
-  },
-  "version": "3.1.1"
+  }
 }
